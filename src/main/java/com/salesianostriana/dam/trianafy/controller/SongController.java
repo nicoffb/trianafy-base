@@ -3,12 +3,14 @@ package com.salesianostriana.dam.trianafy.controller;
 import com.salesianostriana.dam.trianafy.model.Artist;
 import com.salesianostriana.dam.trianafy.model.Song;
 import com.salesianostriana.dam.trianafy.service.SongService;
+import dto.SongInfoResponseDTO;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 @RequiredArgsConstructor
@@ -17,22 +19,23 @@ public class SongController {
     private final SongService songService;
 
     @GetMapping("/song")
-    public ResponseEntity<?> obtenerTodas(){
+    public ResponseEntity<List<SongInfoResponseDTO>>obtenerTodas(){
         List<Song> result = songService.findAll();
         if (result.isEmpty()){
             return ResponseEntity.notFound().build();
         }else{
-            return ResponseEntity.ok(result);
+            return ResponseEntity.ok(result.stream().map(SongInfoResponseDTO::of).collect(Collectors.toList()));
         }
     }
 
     @GetMapping("/song/{id}")
-    public ResponseEntity<?> obtenerUna (@PathVariable Long id){
+    public ResponseEntity<List<SongInfoResponseDTO>> obtenerUna (@PathVariable Long id){
         Song result = songService.findById(id).orElse(null);
         if (result == null){
             return ResponseEntity.notFound().build();
         }else
-            return ResponseEntity.ok(result);
+            return ResponseEntity.ok(songService.findById(id).map(SongInfoResponseDTO::of));
+        //por q  no return ResponseEntity.ok(result.stream().map(SongInfoResponseDTO::of).collect(Collectors.toList()));
     }
 
     @PostMapping("/song")
@@ -45,10 +48,10 @@ public class SongController {
     }
 
     @PutMapping("/song/{id}")
-    public ResponseEntity<?> editarCancion (@RequestBody Song editar, @PathVariable Long id){
-        return songService.findById(id).map(a -> {
-            a.setTitle((editar.getTitle()));
-            return ResponseEntity.ok(songService.add(a));
+    public ResponseEntity<SongInfoResponseDTO> editarCancion (@RequestBody SongInfoResponseDTO editar, @PathVariable Long id){
+        return songService.findById(id).map(s -> {
+            s.setTitle((editar.getTitle()));
+            return ResponseEntity.ok(songService.add(s));
         }).orElseGet(() -> {
             return ResponseEntity.notFound().build();
         });

@@ -2,14 +2,16 @@ package com.salesianostriana.dam.trianafy.controller;
 
 import com.salesianostriana.dam.trianafy.model.Artist;
 import com.salesianostriana.dam.trianafy.model.Playlist;
+import com.salesianostriana.dam.trianafy.model.Song;
 import com.salesianostriana.dam.trianafy.service.PlaylistService;
 import dto.AllPlaylistsResponseDTO;
+import dto.BasicPlaylistResponseDTO;
+import dto.OnePlaylistRequestDTO;
 import dto.OnePlaylistResponseDTO;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -39,8 +41,38 @@ public class PlaylistController {
             return ResponseEntity.of(playlistService.findById(id).map(OnePlaylistResponseDTO::of));
     }
 
+    @PostMapping("/list")
+    public ResponseEntity<BasicPlaylistResponseDTO> nuevaPlaylist (@RequestBody OnePlaylistRequestDTO nuevo){
+        if(nuevo.getName() == ""){
+            return ResponseEntity.badRequest().build();
+        }
+        Playlist saved = playlistService.add(nuevo.toPlaylist());
 
+        return ResponseEntity.status(HttpStatus.CREATED).body(BasicPlaylistResponseDTO.of(saved));
+    }
+// una cosa es lo que envio (oneplaylist) y otra cosa es lo que tiene que devolverme (basicplaylist que contiene el id)
+    //además PlayList es distinta a estas por lo tanto tengo que transformarlas
 
+//    @PutMapping("/list/{id}")
+//    public ResponseEntity<OnePlaylistResponseDTO> editarPlaylist (@RequestBody OnePlaylistResponseDTO editar, @PathVariable Long id){
+//
+//
+//        return playlistService.findById(id).map(p -> {
+//            p.setName((editar.getName()));
+//            p.setDescription((editar.getDescription()));
+//
+//            return ResponseEntity.ok(playlistService.add());
+//        }).orElseGet(() -> {
+//            return ResponseEntity.notFound().build();
+//        });
+//    }
+
+    @DeleteMapping("/list/{id}")
+    public ResponseEntity<?> borrarArtista(@PathVariable Long id){
+
+        playlistService.deleteById(id);
+        return ResponseEntity.noContent().build();
+    }
 
 
 
