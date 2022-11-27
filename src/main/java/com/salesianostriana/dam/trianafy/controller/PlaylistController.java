@@ -50,26 +50,27 @@ public class PlaylistController {
 
         return ResponseEntity.status(HttpStatus.CREATED).body(BasicPlaylistResponseDTO.of(saved));
     }
-// una cosa es lo que envio (oneplaylist) y otra cosa es lo que tiene que devolverme (basicplaylist que contiene el id)
-    //además PlayList es distinta a estas por lo tanto tengo que transformarlas
+ //una cosa es lo que envio (oneplaylist) y otra cosa es lo que tiene que devolverme (basicplaylist que contiene el id)
+  //  además PlayList es distinta a estas por lo tanto tengo que transformarlas
 
-//    @PutMapping("/list/{id}")
-//    public ResponseEntity<OnePlaylistResponseDTO> editarPlaylist (@RequestBody OnePlaylistResponseDTO editar, @PathVariable Long id){
-//
-//
-//        return playlistService.findById(id).map(p -> {
-//            p.setName((editar.getName()));
-//            p.setDescription((editar.getDescription()));
-//
-//            return ResponseEntity.ok(playlistService.add());
-//        }).orElseGet(() -> {
-//            return ResponseEntity.notFound().build();
-//        });
-//    }
+    @PutMapping("/list/{id}")
+    public ResponseEntity<OnePlaylistResponseDTO> editarPlaylist (@RequestBody OnePlaylistResponseDTO editar, @PathVariable Long id){
+        if(editar.getName()== ""){
+            return ResponseEntity.badRequest().build();
+        }else {
+            return ResponseEntity.of(playlistService.findById(id).map(p -> {
+                p.setName((editar.getName()));
+                p.setDescription((editar.getDescription()));
+                return OnePlaylistResponseDTO.of(playlistService.edit(p));
+            }));
+        }
+    }
 
     @DeleteMapping("/list/{id}")
     public ResponseEntity<?> borrarArtista(@PathVariable Long id){
-
+        if (playlistService.findById(id).isPresent()){
+            playlistService.deleteById(id);
+        }
         playlistService.deleteById(id);
         return ResponseEntity.noContent().build();
     }

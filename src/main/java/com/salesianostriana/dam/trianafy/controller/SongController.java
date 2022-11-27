@@ -29,13 +29,13 @@ public class SongController {
     }
 
     @GetMapping("/song/{id}")
-    public ResponseEntity<List<SongInfoResponseDTO>> obtenerUna (@PathVariable Long id){
+    public ResponseEntity<SongInfoResponseDTO> obtenerUna (@PathVariable Long id){
         Song result = songService.findById(id).orElse(null);
         if (result == null){
             return ResponseEntity.notFound().build();
         }else
-            return ResponseEntity.ok(songService.findById(id).map(SongInfoResponseDTO::of));
-        //por q  no return ResponseEntity.ok(result.stream().map(SongInfoResponseDTO::of).collect(Collectors.toList()));
+            return ResponseEntity.ok(songService.findById(id).map(SongInfoResponseDTO::of).get());
+        //ResponseEntity.of(songService.findById(id).map(SongInfoResponseDTO::of));  se puede poner en una linea
     }
 
     @PostMapping("/song")
@@ -51,7 +51,8 @@ public class SongController {
     public ResponseEntity<SongInfoResponseDTO> editarCancion (@RequestBody SongInfoResponseDTO editar, @PathVariable Long id){
         return songService.findById(id).map(s -> {
             s.setTitle((editar.getTitle()));
-            return ResponseEntity.ok(songService.add(s));
+            return ResponseEntity.ok(SongInfoResponseDTO.of(songService.add(s)));
+            //EL METODO OF transforma una SONG en una SONG INFO RESPONSE
         }).orElseGet(() -> {
             return ResponseEntity.notFound().build();
         });
