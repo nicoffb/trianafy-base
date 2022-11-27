@@ -1,17 +1,15 @@
 package com.salesianostriana.dam.trianafy.controller;
 
-import com.salesianostriana.dam.trianafy.model.Artist;
+import com.salesianostriana.dam.trianafy.dto.*;
 import com.salesianostriana.dam.trianafy.model.Playlist;
 import com.salesianostriana.dam.trianafy.model.Song;
 import com.salesianostriana.dam.trianafy.service.PlaylistService;
-import dto.AllPlaylistsResponseDTO;
-import dto.BasicPlaylistResponseDTO;
-import dto.OnePlaylistRequestDTO;
-import dto.OnePlaylistResponseDTO;
+import com.salesianostriana.dam.trianafy.service.SongService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.ModelAndView;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -21,6 +19,7 @@ import java.util.stream.Collectors;
 public class PlaylistController {
 
     private final PlaylistService playlistService;
+    private final SongService songService;
 
     @GetMapping("/list")
     public ResponseEntity<List<AllPlaylistsResponseDTO>> obtenerTodas(){
@@ -75,6 +74,46 @@ public class PlaylistController {
         return ResponseEntity.noContent().build();
     }
 
+
+    @GetMapping("/list/{id}/song/")
+    public ModelAndView verCancionesPlaylist(@PathVariable Long id){
+        return new ModelAndView("redirect:/list/" + id);
+    }
+    //también vale copiando y pegando el mismo método
+
+    @GetMapping("/list/{id}/song/{idSong}")
+    public ResponseEntity<OneSongResponse> obtenerUnaCancion (@PathVariable Long id, @PathVariable Long idSong){
+       return  ResponseEntity.of(songService.findById(idSong).map(OneSongResponse::of));
+    }
+    // return new ModelAndView("redirect:/song/" + idSong)
+
+
+    @PostMapping("/list/{id}/song/{idSong}")
+    public ResponseEntity<OnePlaylistResponseDTO> sumarCancion(@PathVariable Long id, @PathVariable Long idSong){
+        if(songService.findById(idSong).isPresent()){
+            return ResponseEntity.of(
+                    playlistService.findById(id).map(playlist -> {
+                        playlist.addSong(songService.findById(idSong).get());
+                        return OnePlaylistResponseDTO.of(playlistService.edit(playlist)); //se guardan los cambios realizados(la cancion añadida)
+                    })
+            );
+        }
+        return ResponseEntity.notFound().build();
+    }
+
+    @DeleteMapping("/list/{id}/song/{idSong}")
+    public ResponseEntity<?> borrarDePlaylist(@PathVariable Long id, @PathVariable Long idSong){
+        return playlistService.findById(id).map(playlist -> {
+            if (songService.findById(idSong).isPresent()){
+                Song borrar = songService.findById(idSong).get();   //el get te saca del optional la info
+                if(playlist.getSongs().contains(borrar)){
+                    playlist.deleteSong(borrar);
+                    playlistService.edit(playlist); //se guardan los cambios realizados (el borrado)
+                }
+            }
+            return ResponseEntity.noContent().build();
+        }).orElse(ResponseEntity.notFound().build());
+    }
 
 
 

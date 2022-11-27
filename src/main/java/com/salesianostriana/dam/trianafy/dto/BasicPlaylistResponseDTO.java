@@ -1,4 +1,4 @@
-package dto;
+package com.salesianostriana.dam.trianafy.dto;
 
 import com.salesianostriana.dam.trianafy.model.Playlist;
 import lombok.Builder;

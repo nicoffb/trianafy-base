@@ -1,4 +1,4 @@
-package dto;
+package com.salesianostriana.dam.trianafy.dto;
 
 import com.salesianostriana.dam.trianafy.model.Playlist;
 import lombok.Builder;
@@ -14,14 +14,14 @@ public class OnePlaylistResponseDTO {
     private Long id;
     private String name;
     private String description;
-    private List<SongInfoResponseDTO> songs;
+    private List<OneSongResponse> songs;
 
     public static OnePlaylistResponseDTO of(Playlist playlist){
         return OnePlaylistResponseDTO.builder()
                 .id(playlist.getId())
                 .name(playlist.getName())
                 .description(playlist.getDescription())
-                .songs(playlist.getSongs().stream().map(SongInfoResponseDTO::of).collect(Collectors.toList()))
+                .songs(playlist.getSongs().stream().map(OneSongResponse::of).collect(Collectors.toList()))
                 .build();
     }
 
