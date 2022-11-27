@@ -7,7 +7,7 @@ import lombok.Value;
 
 @Builder
 @Value
-public class OneSongResponse {
+public class OneSongResponseDTO {
 
     private Long id;
     private String title;
@@ -15,12 +15,12 @@ public class OneSongResponse {
     private String album;
     private String year;
 
-    public static OneSongResponse of (Song song){
+    public static OneSongResponseDTO of (Song song){
         String artistName = "";
         if(song.getArtist() != null){
             artistName = song.getArtist().getName();
         }
-        return OneSongResponse.builder()
+        return OneSongResponseDTO.builder()
                 .id(song.getId())
                 .title(song.getTitle())
                 .artist(artistName)

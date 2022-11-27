@@ -1,13 +1,11 @@
 package com.salesianostriana.dam.trianafy.dto;
 
-import com.salesianostriana.dam.trianafy.model.Playlist;
-import com.salesianostriana.dam.trianafy.model.Song;
 import lombok.Builder;
 import lombok.Value;
 
 @Builder
 @Value
-public class OneSongRequest {
+public class OneSongRequestDTO {
 
         private String title;
         private Long artistId;

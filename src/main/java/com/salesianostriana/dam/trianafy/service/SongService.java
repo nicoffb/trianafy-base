@@ -1,8 +1,7 @@
 package com.salesianostriana.dam.trianafy.service;
 
 
-import com.salesianostriana.dam.trianafy.dto.OneSongRequest;
-import com.salesianostriana.dam.trianafy.model.Artist;
+import com.salesianostriana.dam.trianafy.dto.OneSongRequestDTO;
 import com.salesianostriana.dam.trianafy.model.Song;
 import com.salesianostriana.dam.trianafy.repos.SongRepository;
 import lombok.RequiredArgsConstructor;
@@ -43,12 +42,12 @@ public class SongService {
         repository.deleteById(id);
     }
 
-    public Song toSong(OneSongRequest oneSongRequest){
+    public Song toSong(OneSongRequestDTO oneSongRequestDTO){
         return Song.builder()
-                .title(oneSongRequest.getTitle())
-                .artist(artistService.findById(oneSongRequest.getArtistId()).get())      //OJO
-                .album(oneSongRequest.getAlbum())
-                .year(oneSongRequest.getYear())
+                .title(oneSongRequestDTO.getTitle())
+                .artist(artistService.findById(oneSongRequestDTO.getArtistId()).get())      //OJO
+                .album(oneSongRequestDTO.getAlbum())
+                .year(oneSongRequestDTO.getYear())
                 .build();
     }
 }
