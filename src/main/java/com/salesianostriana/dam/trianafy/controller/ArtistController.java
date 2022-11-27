@@ -36,6 +36,9 @@ public class ArtistController {
 
    @PostMapping("/artist")
     public ResponseEntity<Artist> nuevoArtista (@RequestBody Artist nuevo){
+       if(nuevo.getName() == ""){
+           return ResponseEntity.badRequest().build();
+       }
        Artist saved = artistService.add(nuevo);
        return ResponseEntity.status(HttpStatus.CREATED).body(saved);
    }
