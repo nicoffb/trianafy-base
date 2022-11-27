@@ -21,4 +21,3 @@ public class AllPlaylistsResponseDTO {
     }
 }
 
-//@NoArgsConstructor @AllArgsConstructor porque aqui no?
