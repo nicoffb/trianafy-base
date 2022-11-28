@@ -42,6 +42,11 @@ public class SongService {
         repository.deleteById(id);
     }
 
+    /**
+     * Este método sirve para coger un OneSongRequest y transformarlo a Song
+     * @param oneSongRequestDTO
+     * @return un Song con los atributos del OneSongRequest
+     */
     public Song toSong(OneSongRequestDTO oneSongRequestDTO){
         return Song.builder()
                 .title(oneSongRequestDTO.getTitle())

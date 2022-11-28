@@ -129,33 +129,10 @@ public class PlaylistController {
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Playlist encontrada",
                     content = { @Content(mediaType = "application/json",
-                            schema = @Schema(implementation = OnePlaylistResponseDTO.class),
-                            examples = @ExampleObject(value = """
-                                    {
-                                        "id": 12,
-                                        "name": "Random",
-                                        "description": "Una lista muy loca",
-                                        "songs": [
-                                            {
-                                                "id": 9,
-                                                "title": "Enter Sandman",
-                                                "artist": "Metallica",
-                                                "album": "Metallica",
-                                                "year": "1991"
-                                            },
-                                            {
-                                                "id": 8,
-                                                "title": "Love Again",
-                                                "artist": "Dua Lipa",
-                                                "album": "Future Nostalgia",
-                                                "year": "2021"
-                                            }
-                                        ]
-                                    }
-                                    """))}),
+                            schema = @Schema(implementation = OnePlaylistResponseDTO.class))}),
             @ApiResponse(responseCode = "404", description = "PlayList no encontrada",
                     content = @Content) })
-    @GetMapping("/list/{id}/song/")
+    @GetMapping("/list/{id}/song")
     public ModelAndView verCancionesPlaylist(@PathVariable Long id){
         return new ModelAndView("redirect:/list/" + id);
     }
